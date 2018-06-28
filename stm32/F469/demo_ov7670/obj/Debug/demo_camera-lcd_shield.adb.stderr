@@ -1,0 +1,2 @@
+demo_camera-lcd_shield.adb:153:14: "LCD_Driver" is undefined (more references follow)
+demo_camera-lcd_shield.adb:162:07: "Set_Memory_Data_Access" is undefined (more references follow)
