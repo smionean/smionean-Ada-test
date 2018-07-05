@@ -166,20 +166,20 @@ private
    ---------------
    -- DCMI Pins --
    ---------------
-
-   DCMI_HSYNC : GPIO_Point renames PA4;
-   DCMI_PCLK  : GPIO_Point renames PA6;
+   DCMI_XCLK  : GPIO_Point renames PB15;  -- new
+   DCMI_HSYNC : GPIO_Point renames PA4;   -- note: not available for ov7670
+   DCMI_PCLK  : GPIO_Point renames PG13;  --  PA6;
    DCMI_RST   : GPIO_Point renames PA10;
    DCMI_PWDN  : GPIO_Point renames PB5;
-   DCMI_VSYNC : GPIO_Point renames PB7;
-   DCMI_D0    : GPIO_Point renames PC6;
-   DCMI_D1    : GPIO_Point renames PC7;
-   DCMI_D2    : GPIO_Point renames PE0;
-   DCMI_D3    : GPIO_Point renames PE1;
-   DCMI_D4    : GPIO_Point renames PE4;
-   DCMI_D5    : GPIO_Point renames PB6;
-   DCMI_D6    : GPIO_Point renames PE5;
-   DCMI_D7    : GPIO_Point renames PE6;
+   DCMI_VSYNC : GPIO_Point renames PA1;  -- PB7;
+   DCMI_D0    : GPIO_Point renames PB1;  --  PC6;
+   DCMI_D1    : GPIO_Point renames PC2;  --  PC7;
+   DCMI_D2    : GPIO_Point renames PC3;  --  PE0;
+   DCMI_D3    : GPIO_Point renames PC4;  --  PE1;
+   DCMI_D4    : GPIO_Point renames PG12;  --  PE4;
+   DCMI_D5    : GPIO_Point renames PA2;  --  PB6;
+   DCMI_D6    : GPIO_Point renames PA6;  --  PE5;
+   DCMI_D7    : GPIO_Point renames PG11;  --  PE6;
 
    FS_IN : GPIO_Point renames PD3;
 
