@@ -1,4 +1,4 @@
-with "../../../Ada_Drivers_Library/boards/stm32f429_discovery/stm32f469_discovery_full.gpr";
+with "../../../Ada_Drivers_Library/boards/stm32f469_discovery/stm32f469_discovery_full.gpr";
 
 project Demo_GPIO_ADC_DMA_TEMP extends "../../../Ada_Drivers_Library/examples/shared/common/common.gpr" is
 
