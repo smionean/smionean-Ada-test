@@ -35,6 +35,7 @@ with Demo_Camera;
 with OTM8009A; use OTM8009A;
 with Framebuffer_OTM8009A; use Framebuffer_OTM8009A;
 with Framebuffer_DSI; use Framebuffer_DSI;
+
 --  with ST7735R;                 use ST7735R;
 --  with ST7735R.RAM_Framebuffer; use ST7735R.RAM_Framebuffer;
 --  with Ravenscar_Time;
@@ -45,6 +46,9 @@ package body Demo_Camera.LCD_Shield is
    LCD_RS  : STM32.GPIO.GPIO_Point renames Shield_PWM2;
    LCD_CS  : STM32.GPIO.GPIO_Point renames Shield_SEL;
    All_Points  : constant STM32.GPIO.GPIO_Points := (LCD_RS, LCD_CS, LCD_RST);
+
+   LCD_Driver : Framebuffer_OTM8009A.Frame_Buffer;
+
 --
 --     LCD_Driver : ST7735R_RAM_Framebuffer_Screen (Shield_SPI'Access,
 --                                                  LCD_CS'Access,
@@ -79,7 +83,7 @@ package body Demo_Camera.LCD_Shield is
 
       STM32.GPIO.Configure_IO (All_Points, GPIO_Conf);
 
---        Initialize (LCD_Driver);
+      Initialize (LCD_Driver);
 
 --        Set_Memory_Data_Access
 --          (LCD                 => LCD_Driver,
@@ -133,14 +137,14 @@ package body Demo_Camera.LCD_Shield is
 --                     Y_Start => 0,
 --                     Y_End   => 159);
 --
---        Turn_On (LCD_Driver);
+      --Turn_On (LCD_Driver);
 
---        LCD_Driver.Initialize_Layer (Layer  => 1,
---                                     Mode   => HAL.Bitmap.RGB_565,
---                                     X      => 0,
---                                     Y      => 0,
---                                     Width  => Image_Width,
---                                     Height => Image_Height);
+      LCD_Driver.Initialize_Layer (Layer  => 1,
+                                   Mode   => HAL.Bitmap.RGB_565,
+                                   X      => 0,
+                                   Y      => 0,
+                                   Width  => Image_Width,
+                                   Height => Image_Height);
       Is_Initialized := True;
    end Initialize;
 
@@ -157,33 +161,33 @@ package body Demo_Camera.LCD_Shield is
    -- Rotate_Screen_180 --
    -----------------------
 
-   procedure Rotate_Screen_180 is
-   begin
-      Set_Memory_Data_Access
-        (LCD                 => LCD_Driver,
-         Color_Order         => RGB_Order,
-         Vertical            => Vertical_Refresh_Top_Bottom,
-         Horizontal          => Horizontal_Refresh_Left_Right,
-         Row_Addr_Order      => Row_Address_Top_Bottom,
-         Column_Addr_Order   => Column_Address_Left_Right,
-         Row_Column_Exchange => False);
-   end Rotate_Screen_180;
+--     procedure Rotate_Screen_180 is
+--     begin
+--        Set_Memory_Data_Access
+--          (LCD                 => LCD_Driver,
+--           Color_Order         => RGB_Order,
+--           Vertical            => Vertical_Refresh_Top_Bottom,
+--           Horizontal          => Horizontal_Refresh_Left_Right,
+--           Row_Addr_Order      => Row_Address_Top_Bottom,
+--           Column_Addr_Order   => Column_Address_Left_Right,
+--           Row_Column_Exchange => False);
+--     end Rotate_Screen_180;
 
    ---------------------
    -- Rotate_Screen_0 --
    ---------------------
 
-   procedure Rotate_Screen_0 is
-   begin
-      Set_Memory_Data_Access
-        (LCD                 => LCD_Driver,
-         Color_Order         => RGB_Order,
-         Vertical            => Vertical_Refresh_Top_Bottom,
-         Horizontal          => Horizontal_Refresh_Left_Right,
-         Row_Addr_Order      => Row_Address_Bottom_Top,
-         Column_Addr_Order   => Column_Address_Right_Left,
-         Row_Column_Exchange => False);
-   end Rotate_Screen_0;
+--     procedure Rotate_Screen_0 is
+--     begin
+--        Set_Memory_Data_Access
+--          (LCD                 => LCD_Driver,
+--           Color_Order         => RGB_Order,
+--           Vertical            => Vertical_Refresh_Top_Bottom,
+--           Horizontal          => Horizontal_Refresh_Left_Right,
+--           Row_Addr_Order      => Row_Address_Bottom_Top,
+--           Column_Addr_Order   => Column_Address_Right_Left,
+--           Row_Column_Exchange => False);
+--     end Rotate_Screen_0;
 
    -------------
    -- Display --

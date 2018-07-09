@@ -83,19 +83,19 @@ package body Demo_Camera is
    -- Turn_On_IR --
    ----------------
 
-   procedure Turn_On_IR is
-   begin
-      Set (IR_LED);
-   end Turn_On_IR;
+--     procedure Turn_On_IR is
+--     begin
+--        Set (IR_LED);
+--     end Turn_On_IR;
 
    -----------------
    -- Turn_Off_IR --
    -----------------
 
-   procedure Turn_Off_IR is
-   begin
-      Clear (IR_LED);
-   end Turn_Off_IR;
+--     procedure Turn_Off_IR is
+--     begin
+--        Clear (IR_LED);
+--     end Turn_Off_IR;
 
    ---------------------------
    -- Initialize_Shield_SPI --

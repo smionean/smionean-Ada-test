@@ -29,7 +29,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with OpenMV; use OpenMV;
+with Demo_Camera; use Demo_Camera;
 
 package body Last_Chance_Handler is
 

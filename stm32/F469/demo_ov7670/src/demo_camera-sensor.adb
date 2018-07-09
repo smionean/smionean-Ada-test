@@ -365,5 +365,4 @@ package body Demo_Camera.Sensor is
          end if;
       end if;
    end Snapshot;
-   end Snapshot;
 end Demo_Camera.Sensor;

@@ -40,10 +40,10 @@ package Demo_Camera.LCD_Shield is
 
    function Bitmap return not null HAL.Bitmap.Any_Bitmap_Buffer;
 
-   procedure Rotate_Screen_180
-     with Pre => Initialized;
-   procedure Rotate_Screen_0
-     with Pre => Initialized;
+--     procedure Rotate_Screen_180
+--       with Pre => Initialized;
+--     procedure Rotate_Screen_0
+--       with Pre => Initialized;
    procedure Display
      with Pre => Initialized;
 

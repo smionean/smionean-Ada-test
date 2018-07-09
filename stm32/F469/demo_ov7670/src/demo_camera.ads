@@ -40,6 +40,7 @@ with STM32.DMA;
 with STM32.DMA.Interrupts;
 with STM32.I2C; use STM32.I2C;
 with STM32.USARTs; use STM32.USARTs;
+with STM32.Board; use STM32.Board;
 
 with HAL.UART;
 
@@ -59,12 +60,12 @@ package Demo_Camera is
 
    procedure Set_RGB_LED (C : LED_Color);
    --  Set color of the RGB LED on the board
-
-   procedure Turn_On_IR;
-   --  Turn on infrared LEDs on the board
-
-   procedure Turn_Off_IR;
-   --  Turn off infrared LEDs on the board
+--
+--     procedure Turn_On_IR;
+--     --  Turn on infrared LEDs on the board
+--
+--     procedure Turn_Off_IR;
+--     --  Turn off infrared LEDs on the board
 
    procedure Initialize_Shield_SPI;
    --  Initialize the SPI port available for shields (SPI2)
@@ -93,11 +94,11 @@ private
    -- LED Pins --
    --------------
 
-   Red_LED   : GPIO_Point renames PC0;
-   Blue_LED  : GPIO_Point renames PC1;
-   Green_LED : GPIO_Point renames PC2;
-   IR_LED    : GPIO_Point renames PE2;
-   All_LEDs  : constant GPIO_Points := (Red_LED, Blue_LED, Green_LED, IR_LED);
+--     Red_LED   : GPIO_Point renames PC0;
+--     Blue_LED  : GPIO_Point renames PC1;
+--     Green_LED : GPIO_Point renames PC2;
+--     IR_LED    : GPIO_Point renames PE2;
+   All_LEDs  : constant GPIO_Points := (Red_LED, Blue_LED, Green_LED);
 
    ---------------
    -- SPI2 Pins --
@@ -140,8 +141,8 @@ private
    ---------------
 
    Sensor_I2C     : I2C_Port renames I2C_1;
-   Sensor_I2C_SCL : GPIO_Point renames PB8;
-   Sensor_I2C_SDA : GPIO_Point renames PB9;
+   Sensor_I2C_SCL : GPIO_Point renames PA4; --  pin A5 --  PB8;
+   Sensor_I2C_SDA : GPIO_Point renames PC5; --  pin A4 --  PB9;
    Sensor_I2C_AF  : GPIO_Alternate_Function renames GPIO_AF_I2C1_4;
 
    -----------------
@@ -160,26 +161,26 @@ private
    -- I2C2 Pins --
    ---------------
 
-   I2C2_SCL : GPIO_Point renames PB10;
-   I2C2_SDA : GPIO_Point renames PB11;
+   I2C2_SCL : GPIO_Point renames PA4; --  pin A5
+   I2C2_SDA : GPIO_Point renames PC5; --  pin A4
 
    ---------------
    -- DCMI Pins --
    ---------------
-   DCMI_XCLK  : GPIO_Point renames PB15;  -- new
-   DCMI_HSYNC : GPIO_Point renames PA4;   -- note: not available for ov7670
-   DCMI_PCLK  : GPIO_Point renames PG13;  --  PA6;
-   DCMI_RST   : GPIO_Point renames PA10;
-   DCMI_PWDN  : GPIO_Point renames PB5;
-   DCMI_VSYNC : GPIO_Point renames PA1;  -- PB7;
+   DCMI_XCLK  : GPIO_Point renames PB15; --  new
+   DCMI_HSYNC : GPIO_Point renames PG10;  --  HREF on ov7670
+   DCMI_PCLK  : GPIO_Point renames PG13; --  PA6;
+   DCMI_RST   : GPIO_Point renames PA10; --  ?
+   DCMI_PWDN  : GPIO_Point renames PB5;  --  ?
+   DCMI_VSYNC : GPIO_Point renames PA1;  --  PB7;
    DCMI_D0    : GPIO_Point renames PB1;  --  PC6;
    DCMI_D1    : GPIO_Point renames PC2;  --  PC7;
    DCMI_D2    : GPIO_Point renames PC3;  --  PE0;
    DCMI_D3    : GPIO_Point renames PC4;  --  PE1;
-   DCMI_D4    : GPIO_Point renames PG12;  --  PE4;
+   DCMI_D4    : GPIO_Point renames PG12; --  PE4;
    DCMI_D5    : GPIO_Point renames PA2;  --  PB6;
    DCMI_D6    : GPIO_Point renames PA6;  --  PE5;
-   DCMI_D7    : GPIO_Point renames PG11;  --  PE6;
+   DCMI_D7    : GPIO_Point renames PG11; --  PE6;
 
    FS_IN : GPIO_Point renames PD3;
 

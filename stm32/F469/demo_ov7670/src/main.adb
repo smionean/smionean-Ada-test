@@ -41,7 +41,7 @@ pragma Unreferenced (Last_Chance_Handler);
 procedure Main is
 begin
    Demo_Camera.Initialize_LEDs;
-   Demo_Camera.Set_RGB_LED (Demo_Camera.Off);
+   Demo_Camera.Set_RGB_LED (Demo_Camera.Blue);
    Demo_Camera.Sensor.Initialize;
    loop
 
@@ -51,6 +51,5 @@ begin
       --  ...and display it.
       Demo_Camera.LCD_Shield.Display;
    end loop;
-
 
 end Main;
