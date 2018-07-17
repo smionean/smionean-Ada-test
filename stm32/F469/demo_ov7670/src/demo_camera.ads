@@ -141,8 +141,8 @@ private
    ---------------
 
    Sensor_I2C     : I2C_Port renames I2C_1;
-   Sensor_I2C_SCL : GPIO_Point renames PA4; --  pin A5 --  PB8;
-   Sensor_I2C_SDA : GPIO_Point renames PC5; --  pin A4 --  PB9;
+   Sensor_I2C_SCL : GPIO_Point renames PB8; --  pin D15 --  PB8;
+   Sensor_I2C_SDA : GPIO_Point renames PB9; --  pin D14 --  PB9;
    Sensor_I2C_AF  : GPIO_Alternate_Function renames GPIO_AF_I2C1_4;
 
    -----------------

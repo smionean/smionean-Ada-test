@@ -33,8 +33,9 @@ with Demo_Camera;
 with Demo_Camera.Sensor;
 with Demo_Camera.LCD_Shield;
 with Framebuffer_OTM8009A;
-
-
+--  with STM32.Board;  use STM32.Board;
+with Ada.Real_Time; use Ada.Real_Time;
+with LCD_Std_Out;
 with Last_Chance_Handler;
 pragma Unreferenced (Last_Chance_Handler);
 
@@ -42,14 +43,21 @@ procedure Main is
 begin
    Demo_Camera.Initialize_LEDs;
    Demo_Camera.Set_RGB_LED (Demo_Camera.Blue);
+   LCD_Std_Out.Put_Line("Program started");
    Demo_Camera.Sensor.Initialize;
-   loop
+   LCD_Std_Out.Put_Line("Camera started");
+   --  Green_LED.Set;
 
+   loop
       --  Take a snapshot...
       Demo_Camera.Sensor.Snapshot (Demo_Camera.LCD_Shield.Bitmap);
 
       --  ...and display it.
       Demo_Camera.LCD_Shield.Display;
+
+      --  Green_LED.Toggle;
+      --  Demo_Camera.Set_RGB_LED (Demo_Camera.Blue);
+      --  delay until Clock + Milliseconds (100);
    end loop;
 
 end Main;

@@ -54,7 +54,7 @@ with HAL;           use HAL;
 with STM32.PWM;     use STM32.PWM;
 with STM32.Setup;
 with Demo_Camera; use Demo_Camera;
---  with LCD_Std_Out;
+with LCD_Std_Out;
 
 package body Demo_Camera.Sensor is
   package DCMI renames STM32.DCMI;
@@ -81,16 +81,23 @@ package body Demo_Camera.Sensor is
    -----------
 
    function Probe (Cam_Addr : out UInt10) return Boolean is
-      Status : I2C_Status;
+      Status : I2C_Status := Ok;
    begin
+      LCD_Std_Out.Clear_Screen;
       for Addr in UInt10 range 0 .. 126 loop
+--           LCD_Std_Out.Put_Line("* Probe Addr "&Addr'Img);
          Sensor_I2C.Master_Transmit (Addr    => Addr,
                                      Data    => (0 => 0),
                                      Status  => Status,
-                                     Timeout => 10_000);
+                                     Timeout => 5_000);
+         if Addr mod 20 = 0 then
+            LCD_Std_Out.Clear_Screen;
+         end if;
+
+         LCD_Std_Out.Put_Line("* Probe Addr "&Addr'Img&"-> Status : "&Status'Img);
          if Status = Ok then
             Cam_Addr := Addr;
-            return True;
+          return True;
          end if;
          delay until Clock + Milliseconds (1);
       end loop;
@@ -114,17 +121,21 @@ package body Demo_Camera.Sensor is
 
       procedure Initialize_Clock is
       begin
+         LCD_Std_Out.Put_Line("           Initialize_Clock");
          Configure_PWM_Timer (SENSOR_CLK_TIM'Access, SENSOR_CLK_FREQ);
-
+         LCD_Std_Out.Put_Line("             Configure_PWM_Timer done");
          CLK_PWM_Mod.Attach_PWM_Channel
           (Generator => SENSOR_CLK_TIM'Access,
            Channel   => SENSOR_CLK_CHAN,
            Point     => SENSOR_CLK_IO,
            PWM_AF    => SENSOR_CLK_AF);
-
+         LCD_Std_Out.Put_Line("             CLK_PWM_Mod.Attach_PWM_Channel done");
          CLK_PWM_Mod.Set_Duty_Cycle (Value => 50);
+         LCD_Std_Out.Put_Line("             CLK_PWM_Mod.Set_Duty_Cycle done");
 
          CLK_PWM_Mod.Enable_Output;
+         LCD_Std_Out.Put_Line("             CLK_PWM_Mod.Enable_Output done");
+
       end Initialize_Clock;
 
       -----------------------
@@ -138,25 +149,33 @@ package body Demo_Camera.Sensor is
       begin
 
          --  Power cycle
+         LCD_Std_Out.Put_Line("    Initialize_Camera");
          Set (DCMI_PWDN);
+         LCD_Std_Out.Put_Line("      DCMI_PWDN set");
          delay until Clock + Milliseconds (10);
          Clear (DCMI_PWDN);
+         LCD_Std_Out.Put_Line("      DCMI_PWDN cleared");
          delay until Clock + Milliseconds (10);
 
          Initialize_Clock;
+         LCD_Std_Out.Put_Line("      Initialize_Clock");
 
          Set (DCMI_RST);
+         LCD_Std_Out.Put_Line("      DCMI_RST set");
          delay until Clock + Milliseconds (10);
          Clear (DCMI_RST);
+         LCD_Std_Out.Put_Line("      DCMI_RST cleared");
          delay until Clock + Milliseconds (10);
 
          if  not Probe (Cam_Addr) then
-
+            LCD_Std_Out.Put_Line("        no probe");
             --  Retry with reversed reset polarity
             Set (DCMI_RST);
+            LCD_Std_Out.Put_Line("          DCMI_RST set");
             delay until Clock + Milliseconds (10);
 
             if  not Probe (Cam_Addr) then
+               LCD_Std_Out.Put_Line("        Initialize_Camera Error 001 raised");
                raise Program_Error;
             end if;
          end if;
@@ -164,12 +183,15 @@ package body Demo_Camera.Sensor is
          delay until Clock + Milliseconds (10);
 
          --  Select sensor bank
+         LCD_Std_Out.Put_Line("      Sensor_I2C.Mem_Write started");
          Sensor_I2C.Mem_Write (Addr          => Cam_Addr,
                                Mem_Addr      => 16#FF#,
                                Mem_Addr_Size => Memory_Size_8b,
                                Data          => (0 => 1),
                                Status        => Status);
+         LCD_Std_Out.Put_Line("      Sensor_I2C.Mem_Write done");
          if Status /= Ok then
+            LCD_Std_Out.Put_Line("        Initialize_Camera Error 002 raised");
             raise Program_Error;
          end if;
 
@@ -178,22 +200,27 @@ package body Demo_Camera.Sensor is
          Sensor_I2C.Master_Transmit (Addr    => Cam_Addr,
                                      Data    => (1 => REG_PID),
                                      Status  => Status);
+         LCD_Std_Out.Put_Line("      Sensor_I2C.Master_Transmit");
          if Status /= Ok then
+            LCD_Std_Out.Put_Line("        Initialize_Camera Error 003 raised");
             raise Program_Error;
          end if;
 
          Sensor_I2C.Master_Receive (Addr    => Cam_Addr,
                                     Data    => Data,
                                     Status  => Status);
+         LCD_Std_Out.Put_Line("      Sensor_I2C.Master_Receive");
          if Status /= Ok then
+            LCD_Std_Out.Put_Line("        Initialize_Camera Error 004 raised");
             raise Program_Error;
          end if;
 
          if Status /= Ok then
+            LCD_Std_Out.Put_Line("        Initialize_Camera Error 005 raised");
             raise Program_Error;
          end if;
          Camera_PID := Data (Data'First);
-
+         LCD_Std_Out.Put_Line("       Camera_PID "&Camera_PID'Img);
          case Camera_PID is
             when OV2640_PID =>
                Initialize (Camera_2640, Cam_Addr);
@@ -208,6 +235,7 @@ package body Demo_Camera.Sensor is
                Set_Pixel_Format (Camera_7725, Pix_RGB565);
                Set_Frame_Size (Camera_7725, QQVGA2);
             when others =>
+               LCD_Std_Out.Put_Line("        Initialize_Camera Error 006 raised");
                raise Program_Error with "Unknown camera module";
          end case;
 
@@ -315,11 +343,17 @@ package body Demo_Camera.Sensor is
          Configure (Sensor_DMA, Sensor_DMA_Stream, Config);
       end Initialize_DMA;
    begin
+      LCD_Std_Out.Put_Line("Initializing Camera");
       Initialize_IO;
+      LCD_Std_Out.Put_Line("  IO Initialized");
       Initialize_Camera;
+      LCD_Std_Out.Put_Line("  Camera Initialized");
       Initialize_DCMI;
+      LCD_Std_Out.Put_Line("  DCMI Initialized");
       Initialize_DMA;
+      LCD_Std_Out.Put_Line("  DMA Initialized");
       Is_Initialized := True;
+      LCD_Std_Out.Put_Line("Initializing Finished");
    end Initialize;
 
    --------------
@@ -336,14 +370,17 @@ package body Demo_Camera.Sensor is
         or else
           not BM.Mapped_In_RAM
       then
+         LCD_Std_Out.Put_Line("Program_Error 001");
          raise Program_Error;
       end if;
 
+      LCD_Std_Out.Put_Line("Snapshot Width -> "&BM.Width'Img&" / Height -> "&BM.Height'Img);
       if not Compatible_Alignments (Sensor_DMA,
                                     Sensor_DMA_Stream,
                                     DCMI.Data_Register_Address,
                                     BM.Memory_Address)
       then
+         LCD_Std_Out.Put_Line("Program_Error 002");
          raise Program_Error;
       end if;
 
@@ -358,9 +395,11 @@ package body Demo_Camera.Sensor is
 
       if Status /= DMA_No_Error then
          if Status = DMA_Timeout_Error then
+            LCD_Std_Out.Put_Line("Program_Error 003");
             raise Program_Error with "DMA timeout! Transferred: " &
               Items_Transferred (Sensor_DMA, Sensor_DMA_Stream)'Img;
          else
+            LCD_Std_Out.Put_Line("Program_Error 004");
             raise Program_Error;
          end if;
       end if;
